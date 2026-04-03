@@ -1,0 +1,22 @@
+[build-system]
+requires = ["setuptools>=68.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "mailtd"
+version = "1.0.0"
+description = "Official Python SDK for the Mail.td developer email platform"
+readme = "README.md"
+license = {text = "MIT"}
+requires-python = ">=3.9"
+dependencies = ["httpx>=0.25.0"]
+keywords = ["email", "testing", "mail", "api", "sdk", "mailtd"]
+authors = [{name = "Mail.td"}]
+
+[project.urls]
+Homepage = "https://mail.td"
+Documentation = "https://docs.mail.td"
+Repository = "https://github.com/mailtd/mailtd-python"
+
+[tool.setuptools.packages.find]
+include = ["mailtd*"]
