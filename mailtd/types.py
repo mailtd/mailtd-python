@@ -35,6 +35,7 @@ class CreateAccountResult:
     id: str
     address: str
     token: str
+    suggested_next_difficulty: Optional[int] = None
 
 
 @dataclass

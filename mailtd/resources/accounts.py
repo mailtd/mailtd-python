@@ -15,6 +15,7 @@ _DEFAULT_DIFFICULTY = 15
 class Accounts:
     def __init__(self, client: _BaseClient):
         self._client = client
+        self._cached_difficulty = _DEFAULT_DIFFICULTY
 
     def list_domains(self) -> List[Domain]:
         """List available system domains for creating mailboxes."""
@@ -47,8 +48,11 @@ class Accounts:
                 self._client._request("POST", "/api/accounts", json=body),
             )
 
-        # Free user: solve PoW locally
-        pow_solution = solve_pow(address, _DEFAULT_DIFFICULTY)
+        # Normalize address for PoW — server verifies against lowercased form.
+        pow_address = address.lower().strip()
+
+        # Free user: solve PoW locally, starting from cached difficulty.
+        pow_solution = solve_pow(pow_address, self._cached_difficulty)
         body["pow"] = pow_solution
 
         data = self._client._request("POST", "/api/accounts", json=body)
@@ -56,13 +60,17 @@ class Accounts:
         # Handle step-up retry
         if isinstance(data, dict) and data.get("status") == "retry":
             new_difficulty = data["required_difficulty"]
+            self._cached_difficulty = new_difficulty
             step_up_token = data["token"]
-            pow_solution = solve_pow(address, new_difficulty)
+            pow_solution = solve_pow(pow_address, new_difficulty)
             pow_solution["token"] = step_up_token
             body["pow"] = pow_solution
             data = self._client._request("POST", "/api/accounts", json=body)
 
-        return _from_dict(CreateAccountResult, data)
+        result = _from_dict(CreateAccountResult, data)
+        if result.suggested_next_difficulty:
+            self._cached_difficulty = result.suggested_next_difficulty
+        return result
 
     def login(
         self,
