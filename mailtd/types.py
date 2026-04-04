@@ -173,6 +173,14 @@ class SandboxEmailSummary:
 
 
 @dataclass
+class PoWSolution:
+    t: int
+    n: str
+    d: int
+    token: Optional[str] = None
+
+
+@dataclass
 class SubscriptionStatus:
     status: str
     cancel_mode: str

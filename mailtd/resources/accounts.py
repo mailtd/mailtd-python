@@ -3,10 +3,13 @@ from __future__ import annotations
 from typing import Optional, List, TYPE_CHECKING
 
 from mailtd.client import _from_dict
+from mailtd.pow import solve_pow
 from mailtd.types import Domain, AccountInfo, CreateAccountResult, LoginResult
 
 if TYPE_CHECKING:
     from mailtd.client import _BaseClient
+
+_DEFAULT_DIFFICULTY = 15
 
 
 class Accounts:
@@ -25,13 +28,41 @@ class Accounts:
         password: Optional[str] = None,
         auth_key: Optional[str] = None,
     ) -> CreateAccountResult:
-        """Create a new mailbox."""
+        """Create a new mailbox.
+
+        For free users (no API token), a Proof-of-Work challenge is solved
+        locally before the request is sent. If the server requires a higher
+        difficulty, the challenge is re-solved once automatically.
+        """
         body: dict = {"address": address}
         if password:
             body["password"] = password
         if auth_key:
             body["auth_key"] = auth_key
-        return _from_dict(CreateAccountResult, self._client._request("POST", "/api/accounts", json=body))
+
+        # Pro users (token set) skip PoW
+        if self._client._token:
+            return _from_dict(
+                CreateAccountResult,
+                self._client._request("POST", "/api/accounts", json=body),
+            )
+
+        # Free user: solve PoW locally
+        pow_solution = solve_pow(address, _DEFAULT_DIFFICULTY)
+        body["pow"] = pow_solution
+
+        data = self._client._request("POST", "/api/accounts", json=body)
+
+        # Handle step-up retry
+        if isinstance(data, dict) and data.get("status") == "retry":
+            new_difficulty = data["required_difficulty"]
+            step_up_token = data["token"]
+            pow_solution = solve_pow(address, new_difficulty)
+            pow_solution["token"] = step_up_token
+            body["pow"] = pow_solution
+            data = self._client._request("POST", "/api/accounts", json=body)
+
+        return _from_dict(CreateAccountResult, data)
 
     def login(
         self,
