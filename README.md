@@ -48,7 +48,6 @@ with MailTD("tm_pro_...") as client:
 
 ```python
 domains = client.accounts.list_domains()
-challenge = client.accounts.get_challenge()
 account = client.accounts.create("user@mail.td", password="pass123")
 result = client.accounts.login("user@mail.td", password="pass123")
 info = client.accounts.get(account_id)

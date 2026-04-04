@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import Optional, List, TYPE_CHECKING
 
 from mailtd.client import _from_dict
-from mailtd.types import Domain, PoWChallenge, PoWSolution, AccountInfo, CreateAccountResult, LoginResult
+from mailtd.types import Domain, AccountInfo, CreateAccountResult, LoginResult
 
 if TYPE_CHECKING:
     from mailtd.client import _BaseClient
@@ -18,26 +18,19 @@ class Accounts:
         data = self._client._request("GET", "/api/domains")
         return [_from_dict(Domain, d) for d in data["domains"]]
 
-    def get_challenge(self) -> PoWChallenge:
-        """Get a proof-of-work challenge for free account creation."""
-        return _from_dict(PoWChallenge, self._client._request("GET", "/api/challenge"))
-
     def create(
         self,
         address: str,
         *,
         password: Optional[str] = None,
         auth_key: Optional[str] = None,
-        pow: Optional[PoWSolution] = None,
     ) -> CreateAccountResult:
-        """Create a new mailbox. Free users must provide a solved PoW challenge."""
+        """Create a new mailbox."""
         body: dict = {"address": address}
         if password:
             body["password"] = password
         if auth_key:
             body["auth_key"] = auth_key
-        if pow:
-            body["pow"] = {"id": pow.id, "nonce": pow.nonce}
         return _from_dict(CreateAccountResult, self._client._request("POST", "/api/accounts", json=body))
 
     def login(

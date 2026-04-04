@@ -12,20 +12,6 @@ class Domain:
 
 
 @dataclass
-class PoWChallenge:
-    id: str
-    salt: str
-    difficulty: int
-    expires_at: int
-
-
-@dataclass
-class PoWSolution:
-    id: str
-    nonce: str
-
-
-@dataclass
 class AccountInfo:
     id: str
     address: str
