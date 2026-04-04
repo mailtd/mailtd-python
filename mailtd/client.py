@@ -31,12 +31,15 @@ def _from_dict(cls: Type[T], data: dict) -> T:
 
 
 class _BaseClient:
-    def __init__(self, token: str, base_url: str = "https://api.mail.td"):
+    def __init__(self, token: str = "", base_url: str = "https://api.mail.td"):
         self._token = token
         self._base_url = base_url.rstrip("/")
+        headers = {}
+        if token:
+            headers["Authorization"] = f"Bearer {token}"
         self._http = httpx.Client(
             base_url=self._base_url,
-            headers={"Authorization": f"Bearer {token}"},
+            headers=headers,
             timeout=30.0,
         )
 
@@ -96,7 +99,7 @@ class MailTD(_BaseClient):
         messages = client.messages.list(account.id)
     """
 
-    def __init__(self, token: str, base_url: str = "https://api.mail.td"):
+    def __init__(self, token: str = "", base_url: str = "https://api.mail.td"):
         super().__init__(token, base_url)
         self.accounts = Accounts(self)
         self.messages = Messages(self)
