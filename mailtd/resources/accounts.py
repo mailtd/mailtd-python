@@ -58,7 +58,7 @@ class Accounts:
         password: Optional[str] = None,
         auth_key: Optional[str] = None,
     ) -> None:
-        """Reset a mailbox password. Invalidates all existing JWTs.
+        """Reset a mailbox password. Invalidates all existing tokens.
 
         Args:
             account_id: Account ID (UUID) or email address.
