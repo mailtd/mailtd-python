@@ -3,19 +3,15 @@ from __future__ import annotations
 from typing import Optional, List, TYPE_CHECKING
 
 from mailtd.client import _from_dict
-from mailtd.pow import solve_pow
 from mailtd.types import Domain, AccountInfo, CreateAccountResult, LoginResult
 
 if TYPE_CHECKING:
     from mailtd.client import _BaseClient
 
-_DEFAULT_DIFFICULTY = 15
-
 
 class Accounts:
     def __init__(self, client: _BaseClient):
         self._client = client
-        self._cached_difficulty = _DEFAULT_DIFFICULTY
 
     def list_domains(self) -> List[Domain]:
         """List available system domains for creating mailboxes."""
@@ -29,48 +25,15 @@ class Accounts:
         password: Optional[str] = None,
         auth_key: Optional[str] = None,
     ) -> CreateAccountResult:
-        """Create a new mailbox.
-
-        For free users (no API token), a Proof-of-Work challenge is solved
-        locally before the request is sent. If the server requires a higher
-        difficulty, the challenge is re-solved once automatically.
-        """
+        """Create a new mailbox."""
         body: dict = {"address": address}
         if password:
             body["password"] = password
         if auth_key:
             body["auth_key"] = auth_key
 
-        # Pro users (token set) skip PoW
-        if self._client._token:
-            return _from_dict(
-                CreateAccountResult,
-                self._client._request("POST", "/api/accounts", json=body),
-            )
-
-        # Normalize address for PoW — server verifies against lowercased form.
-        pow_address = address.lower().strip()
-
-        # Free user: solve PoW locally, starting from cached difficulty.
-        pow_solution = solve_pow(pow_address, self._cached_difficulty)
-        body["pow"] = pow_solution
-
         data = self._client._request("POST", "/api/accounts", json=body)
-
-        # Handle step-up retry
-        if isinstance(data, dict) and data.get("status") == "retry":
-            new_difficulty = data["required_difficulty"]
-            self._cached_difficulty = new_difficulty
-            step_up_token = data["token"]
-            pow_solution = solve_pow(pow_address, new_difficulty)
-            pow_solution["token"] = step_up_token
-            body["pow"] = pow_solution
-            data = self._client._request("POST", "/api/accounts", json=body)
-
-        result = _from_dict(CreateAccountResult, data)
-        if result.suggested_next_difficulty:
-            self._cached_difficulty = result.suggested_next_difficulty
-        return result
+        return _from_dict(CreateAccountResult, data)
 
     def login(
         self,

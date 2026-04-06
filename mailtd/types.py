@@ -35,7 +35,6 @@ class CreateAccountResult:
     id: str
     address: str
     token: str
-    suggested_next_difficulty: Optional[int] = None
 
 
 @dataclass
@@ -171,14 +170,6 @@ class SandboxEmailSummary:
     preview_text: Optional[str]
     size: int
     created_at: str
-
-
-@dataclass
-class PoWSolution:
-    t: int
-    n: str
-    d: int
-    token: Optional[str] = None
 
 
 @dataclass
