@@ -27,9 +27,9 @@ class Accounts:
     ) -> CreateAccountResult:
         """Create a new mailbox."""
         body: dict = {"address": address}
-        if password:
+        if password is not None:
             body["password"] = password
-        if auth_key:
+        if auth_key is not None:
             body["auth_key"] = auth_key
 
         data = self._client._request("POST", "/api/accounts", json=body)
@@ -64,8 +64,8 @@ class Accounts:
             account_id: Account ID (UUID) or email address.
         """
         body: dict = {}
-        if password:
+        if password is not None:
             body["password"] = password
-        if auth_key:
+        if auth_key is not None:
             body["auth_key"] = auth_key
         self._client._request("PUT", f"/api/accounts/{account_id}/reset-password", json=body)

@@ -78,9 +78,9 @@ class ProUser:
     plan: str
     role: str
     status: str
-    max_accounts: int
     max_domains: int
-    account_count: int
+    ops_used: int
+    ops_limit: int
     domain_count: int
     created_at: str
     downgraded: bool
@@ -166,7 +166,19 @@ class SandboxEmailSummary:
 
 
 @dataclass
+class ScheduledChange:
+    action: str
+    effective_at: str
+
+
+@dataclass
 class SubscriptionStatus:
     status: str
     cancel_mode: str
-    scheduled_cancel_at: Optional[dict] = None
+    scheduled_cancel_at: Optional[ScheduledChange] = None
+
+
+@dataclass
+class AccountPage:
+    accounts: List[Account]
+    next_cursor: str

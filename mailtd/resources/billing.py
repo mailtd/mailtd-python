@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from mailtd.client import _from_dict
-from mailtd.types import SubscriptionStatus
+from mailtd.types import SubscriptionStatus, ScheduledChange
 
 if TYPE_CHECKING:
     from mailtd.client import _BaseClient
@@ -15,7 +15,11 @@ class Billing:
 
     def get_status(self) -> SubscriptionStatus:
         """Get subscription status."""
-        return _from_dict(SubscriptionStatus, self._client._request("GET", "/api/user/subscription/status"))
+        data = self._client._request("GET", "/api/user/subscription/status")
+        sca = data.get("scheduled_cancel_at")
+        if isinstance(sca, dict):
+            data["scheduled_cancel_at"] = _from_dict(ScheduledChange, sca)
+        return _from_dict(SubscriptionStatus, data)
 
     def cancel(self) -> dict:
         """Cancel subscription. Within 14 days: full refund. After: cancel at end of period."""

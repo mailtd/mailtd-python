@@ -21,7 +21,7 @@ class Webhooks:
     def create(self, url: str, *, events: Optional[List[str]] = None) -> Webhook:
         """Create a webhook. URL must be HTTPS. Max 1 per user."""
         body: dict = {"url": url}
-        if events:
+        if events is not None:
             body["events"] = events
         return _from_dict(Webhook, self._client._request("POST", "/api/user/webhooks", json=body))
 
