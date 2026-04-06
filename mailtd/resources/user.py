@@ -23,7 +23,11 @@ class User:
         return [_from_dict(Account, a) for a in data["accounts"]]
 
     def delete_account(self, account_id: str) -> None:
-        """Delete a mailbox under the Pro account."""
+        """Delete a mailbox under the Pro account.
+
+        Args:
+            account_id: Account ID (UUID) or email address.
+        """
         self._client._request("DELETE", f"/api/user/accounts/{account_id}")
 
     def reset_account_password(
@@ -33,7 +37,11 @@ class User:
         password: Optional[str] = None,
         auth_key: Optional[str] = None,
     ) -> None:
-        """Reset a mailbox password under the Pro account."""
+        """Reset a mailbox password under the Pro account.
+
+        Args:
+            account_id: Account ID (UUID) or email address.
+        """
         body: dict = {}
         if password:
             body["password"] = password
@@ -44,7 +52,11 @@ class User:
     def list_account_messages(
         self, account_id: str, *, page: int = 1
     ) -> Tuple[List[EmailSummary], int]:
-        """List messages for a specific mailbox under the Pro account."""
+        """List messages for a specific mailbox under the Pro account.
+
+        Args:
+            account_id: Account ID (UUID) or email address.
+        """
         data = self._client._request("GET", f"/api/user/accounts/{account_id}/messages", params={"page": page})
         msgs = [_from_dict(EmailSummary, m) for m in data["messages"]]
         return msgs, data["page"]

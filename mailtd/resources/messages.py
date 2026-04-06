@@ -14,27 +14,47 @@ class Messages:
         self._client = client
 
     def list(self, account_id: str, *, page: int = 1) -> Tuple[List[EmailSummary], int]:
-        """List messages. Returns (messages, page). Up to 30 per page."""
+        """List messages. Returns (messages, page). Up to 30 per page.
+
+        Args:
+            account_id: Account ID (UUID) or email address.
+        """
         data = self._client._request("GET", f"/api/accounts/{account_id}/messages", params={"page": page})
         msgs = [_from_dict(EmailSummary, m) for m in data["messages"]]
         return msgs, data["page"]
 
     def get(self, account_id: str, message_id: str) -> EmailDetail:
-        """Get a single message with full body and attachment metadata."""
+        """Get a single message with full body and attachment metadata.
+
+        Args:
+            account_id: Account ID (UUID) or email address.
+        """
         data = self._client._request("GET", f"/api/accounts/{account_id}/messages/{message_id}")
         data["attachments"] = [_from_dict(Attachment, a) for a in data.get("attachments", [])]
         return _from_dict(EmailDetail, data)
 
     def delete(self, account_id: str, message_id: str) -> None:
-        """Delete a single message."""
+        """Delete a single message.
+
+        Args:
+            account_id: Account ID (UUID) or email address.
+        """
         self._client._request("DELETE", f"/api/accounts/{account_id}/messages/{message_id}")
 
     def get_source(self, account_id: str, message_id: str) -> bytes:
-        """Download raw EML source of a message."""
+        """Download raw EML source of a message.
+
+        Args:
+            account_id: Account ID (UUID) or email address.
+        """
         return self._client._request("GET", f"/api/accounts/{account_id}/messages/{message_id}/source", raw=True)
 
     def mark_as_read(self, account_id: str, message_id: str) -> None:
-        """Mark a single message as read. Idempotent."""
+        """Mark a single message as read. Idempotent.
+
+        Args:
+            account_id: Account ID (UUID) or email address.
+        """
         self._client._request("PUT", f"/api/accounts/{account_id}/messages/{message_id}/read")
 
     def batch_mark_as_read(
@@ -44,7 +64,11 @@ class Messages:
         ids: Optional[List[str]] = None,
         all: bool = False,
     ) -> int:
-        """Batch mark messages as read. Returns count of updated messages."""
+        """Batch mark messages as read. Returns count of updated messages.
+
+        Args:
+            account_id: Account ID (UUID) or email address.
+        """
         body: dict = {}
         if ids:
             body["ids"] = ids
@@ -54,5 +78,9 @@ class Messages:
         return data["updated"]
 
     def get_attachment(self, account_id: str, message_id: str, index: int) -> bytes:
-        """Download an attachment by its zero-based index."""
+        """Download an attachment by its zero-based index.
+
+        Args:
+            account_id: Account ID (UUID) or email address.
+        """
         return self._client._request("GET", f"/api/accounts/{account_id}/messages/{message_id}/attachments/{index}", raw=True)

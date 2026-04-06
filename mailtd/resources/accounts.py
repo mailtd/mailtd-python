@@ -36,11 +36,19 @@ class Accounts:
         return _from_dict(CreateAccountResult, data)
 
     def get(self, account_id: str) -> AccountInfo:
-        """Get mailbox info by account ID."""
+        """Get mailbox info.
+
+        Args:
+            account_id: Account ID (UUID) or email address.
+        """
         return _from_dict(AccountInfo, self._client._request("GET", f"/api/accounts/{account_id}"))
 
     def delete(self, account_id: str) -> None:
-        """Delete a mailbox and all its emails permanently."""
+        """Delete a mailbox and all its emails permanently.
+
+        Args:
+            account_id: Account ID (UUID) or email address.
+        """
         self._client._request("DELETE", f"/api/accounts/{account_id}")
 
     def reset_password(
@@ -50,7 +58,11 @@ class Accounts:
         password: Optional[str] = None,
         auth_key: Optional[str] = None,
     ) -> None:
-        """Reset a mailbox password. Invalidates all existing JWTs."""
+        """Reset a mailbox password. Invalidates all existing JWTs.
+
+        Args:
+            account_id: Account ID (UUID) or email address.
+        """
         body: dict = {}
         if password:
             body["password"] = password
