@@ -38,13 +38,6 @@ class CreateAccountResult:
 
 
 @dataclass
-class LoginResult:
-    id: str
-    address: str
-    token: str
-
-
-@dataclass
 class Attachment:
     index: int
     filename: str
