@@ -15,7 +15,7 @@ Requires Python 3.9+.
 ```python
 from mailtd import MailTD
 
-client = MailTD("tm_pro_...")
+client = MailTD("td_...")
 
 # Create a mailbox
 account = client.accounts.create("test@mail.td", password="mypassword")
@@ -30,15 +30,17 @@ print(msg.subject, msg.text_body)
 
 ## Authentication
 
+All API calls require a Pro API Token (`td_...`). Pass it when creating the client:
+
 ```python
-# With a Pro API token
-client = MailTD("tm_pro_...")
+# With a token string
+client = MailTD("td_...")
 
 # With custom base URL
-client = MailTD("tm_pro_...", base_url="https://api.mail.td")
+client = MailTD("td_...", base_url="https://api.mail.td")
 
 # As context manager
-with MailTD("tm_pro_...") as client:
+with MailTD("td_...") as client:
     messages, _ = client.messages.list(account_id)
 ```
 
@@ -50,6 +52,7 @@ with MailTD("tm_pro_...") as client:
 domains = client.accounts.list_domains()
 account = client.accounts.create("user@mail.td", password="pass123")
 info = client.accounts.get(account_id)
+client.accounts.reset_password(account_id, password="newpass")
 client.accounts.delete(account_id)
 ```
 
@@ -109,6 +112,16 @@ client.billing.resume()
 url = client.billing.get_portal_url()
 ```
 
+### User (Pro)
+
+```python
+me = client.user.get_me()
+accounts = client.user.list_accounts()
+client.user.delete_account(account_id)
+client.user.reset_account_password(account_id, password="newpass")
+messages, page = client.user.list_account_messages(account_id)
+```
+
 ## Error Handling
 
 ```python
@@ -118,7 +131,7 @@ try:
     client.accounts.create("taken@mail.td", password="...")
 except APIError as e:
     print(e.status)  # 409
-    print(e.code)    # "address_already_exists"
+    print(e.code)    # "address_taken"
 ```
 
 ## License
