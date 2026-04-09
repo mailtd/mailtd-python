@@ -9,6 +9,7 @@ class Domain:
     domain: str
     default: bool
     sort_order: int
+    pro_only: bool = False
 
 
 @dataclass
