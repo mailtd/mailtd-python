@@ -1,7 +1,7 @@
 # mailtd
 
 [![PyPI version](https://img.shields.io/pypi/v/mailtd.svg)](https://pypi.org/project/mailtd/)
-[![PyPI downloads](https://img.shields.io/pypi/dm/mailtd.svg)](https://pypi.org/project/mailtd/)
+[![PyPI downloads](https://static.pepy.tech/badge/mailtd/month)](https://pepy.tech/project/mailtd)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 
 Official Python SDK for [Mail.td](https://mail.td) — the developer email platform for **temp mail**, **email testing**, and **SMTP sandbox**.
