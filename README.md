@@ -4,13 +4,12 @@
 [![PyPI downloads](https://static.pepy.tech/badge/mailtd/month)](https://pepy.tech/project/mailtd)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 
-Official Python SDK for [Mail.td](https://mail.td) — the developer email platform for **temp mail**, **email testing**, and **SMTP sandbox**.
+Official Python SDK for [Mail.td](https://mail.td) — temp mail & temporary email with REST API, webhooks, and custom domains. Instant inboxes, password protected, sign in from any device.
 
 - **Temp Mail API** — Create and manage temporary email addresses programmatically
-- **Email Testing** — Receive, inspect, and verify emails in your test suite
-- **SMTP Sandbox** — Capture outbound emails in a safe sandbox environment without sending to real inboxes
 - **Webhooks** — Get notified in real-time when emails arrive
 - **Custom Domains** — Use your own domain for branded temporary mailboxes
+- **Password Protected** — Sign in to the same mailbox from any device
 
 ## Install
 
@@ -42,7 +41,6 @@ print(msg.subject, msg.text_body)
 
 - **Automated testing** — Create temp mail addresses in CI/CD to test signup flows, OTP verification, and transactional emails
 - **Email verification testing** — Validate that your app sends the right emails with the right content
-- **SMTP sandbox** — Route your app's outbound SMTP to Mail.td sandbox to inspect emails without spamming real users
 - **QA environments** — Give each test run its own mailbox, then tear it down
 
 ## Authentication
@@ -103,15 +101,6 @@ secret = client.webhooks.rotate_secret(webhook.id)
 client.webhooks.delete(webhook.id)
 ```
 
-### Sandbox (Pro)
-
-```python
-info = client.sandbox.get_info()
-messages, page = client.sandbox.list_messages()
-msg = client.sandbox.get_message(message_id)
-deleted = client.sandbox.purge_messages()
-```
-
 ### Tokens (Pro)
 
 ```python
@@ -153,7 +142,7 @@ except APIError as e:
 
 ## Links
 
-- [Website](https://mail.td) — Create temp mail, email testing, SMTP sandbox
+- [Website](https://mail.td) — Temp mail & temporary email with REST API
 - [API Documentation](https://docs.mail.td) — Full API reference
 - [Node.js SDK](https://www.npmjs.com/package/mailtd) — `npm install mailtd`
 - [Go SDK](https://github.com/mailtd/mailtd-go) — `go get github.com/mailtd/mailtd-go`

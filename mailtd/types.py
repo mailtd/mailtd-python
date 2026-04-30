@@ -142,31 +142,6 @@ class Token:
 
 
 @dataclass
-class SandboxInfo:
-    enabled: bool
-    smtp_host: str
-    smtp_port: int
-    auth_method: str
-    username: str
-    note: str
-    account_id: Optional[str] = None
-    address: Optional[str] = None
-    quota: Optional[int] = None
-    used: Optional[int] = None
-
-
-@dataclass
-class SandboxEmailSummary:
-    id: str
-    sender: str
-    from_: Optional[str]
-    subject: Optional[str]
-    preview_text: Optional[str]
-    size: int
-    created_at: str
-
-
-@dataclass
 class ScheduledChange:
     action: str
     effective_at: str

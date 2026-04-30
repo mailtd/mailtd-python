@@ -3,6 +3,7 @@ from __future__ import annotations
 from typing import Optional, List, Tuple, TYPE_CHECKING
 
 from mailtd.client import _from_dict
+from mailtd.crypto import _build_reset_password_body
 from mailtd.types import ProUser, Account, AccountPage, EmailSummary
 
 if TYPE_CHECKING:
@@ -47,17 +48,23 @@ class User:
         *,
         password: Optional[str] = None,
         auth_key: Optional[str] = None,
+        address: Optional[str] = None,
     ) -> None:
         """Reset a mailbox password under the Pro account.
 
+        If ``password`` is supplied the SDK derives the auth_key locally; for
+        UUID account IDs ``address`` must be provided so the SDK can compute
+        the Argon2 salt.
+
         Args:
             account_id: Account ID (UUID) or email address.
+            password: New password (locally derived to auth_key).
+            auth_key: New auth_key (sent as-is, takes precedence over password).
+            address: Required when account_id is a UUID and password is used.
         """
-        body: dict = {}
-        if password is not None:
-            body["password"] = password
-        if auth_key is not None:
-            body["auth_key"] = auth_key
+        body = _build_reset_password_body(
+            account_id, password=password, auth_key=auth_key, address=address
+        )
         self._client._request("PUT", f"/api/user/accounts/{account_id}/reset-password", json=body)
 
     def list_account_messages(

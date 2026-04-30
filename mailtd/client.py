@@ -81,7 +81,6 @@ from mailtd.resources.messages import Messages
 from mailtd.resources.domains import Domains
 from mailtd.resources.webhooks import Webhooks
 from mailtd.resources.tokens import Tokens
-from mailtd.resources.sandbox import Sandbox
 from mailtd.resources.billing import Billing
 from mailtd.resources.user import User
 
@@ -106,6 +105,5 @@ class MailTD(_BaseClient):
         self.domains = Domains(self)
         self.webhooks = Webhooks(self)
         self.tokens = Tokens(self)
-        self.sandbox = Sandbox(self)
         self.billing = Billing(self)
         self.user = User(self)

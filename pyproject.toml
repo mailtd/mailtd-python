@@ -4,13 +4,13 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "mailtd"
-version = "1.3.2"
-description = "Official Python SDK for Mail.td — temp mail API, email testing, and SMTP sandbox for developers"
+version = "2.0.0"
+description = "Official Python SDK for Mail.td — temp mail & temporary email with REST API, webhooks, and custom domains."
 readme = "README.md"
 license = {text = "MIT"}
 requires-python = ">=3.9"
-dependencies = ["httpx>=0.25.0"]
-keywords = ["temp-mail", "temporary-email", "disposable-email", "email-testing", "smtp-sandbox", "email-sandbox", "email-api", "test-email", "email-verification", "mailtd", "mail-td", "sdk"]
+dependencies = ["httpx>=0.25.0", "argon2-cffi>=23.1.0"]
+keywords = ["temp-mail", "temporary-email", "disposable-email", "email-testing", "email-api", "test-email", "email-verification", "mailtd", "mail-td", "sdk"]
 authors = [{name = "Mail.td"}]
 
 [project.urls]

@@ -5,3 +5,4 @@ build/
 .eggs/
 *.pyc
 .DS_Store
+.venv/
